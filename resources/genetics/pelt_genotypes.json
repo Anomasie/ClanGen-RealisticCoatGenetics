@@ -1,0 +1,261 @@
+{
+  "A1": {
+    "TiA": {
+      "gen": "TiA",
+      "name": "ticked",
+      "note": "ultimately dominant",
+      "rarity": 10
+    },
+    "Ti+": {
+      "gen": "Ti+",
+      "name": "not ticked",
+      "rarity": 90
+    }
+  },
+  "A3": {
+    "A": {
+      "gen": "A",
+      "name": "agouti",
+      "rarity": 35
+    },
+    "a": {
+      "gen": "a",
+      "name": "non-agouti",
+      "note": "Washes out the stripes of red cats and deletes them if the cat is not.",
+      "rarity": 65
+    }
+  },
+  "B1": {
+    "TaM": {
+      "gen": "TaM",
+      "name": "mackerel or striped",
+      "note": "dominant",
+      "rarity": 40
+    },
+    "Tab": {
+      "gen": "Tab",
+      "name": "blotched or classic",
+      "rarity": 60
+    }
+  },
+  "BS": {
+    "Sp": {
+      "gen": "Sp",
+      "name": "spotted",
+      "note": "makes mackerel and blotched tabbys into spotted tabbys. Doesn't work if the tabby is ticked.",
+      "rarity": 5
+    },
+    "sp": {
+      "gen": "sp",
+      "name": "not spotted",
+      "rarity": 95
+    }
+  },
+  "C1": {
+    "D": {
+      "gen": "D",
+      "name": "not diluted",
+      "rarity": 50
+    },
+    "d": {
+      "gen": "d",
+      "name": "diluted",
+      "rarity": 50
+    }
+  },
+  "CAR": {
+    "Dm": {
+      "gen": "Dm",
+      "name": "colorful",
+      "note": "Not well documented. Here: diluted + dmdm = caramelized",
+      "rarity": 75
+    },
+    "dm": {
+      "gen": "dm",
+      "name": "caramelized",
+      "note": "not well documented",
+      "rarity": 25
+    }
+  },
+  "CURL": {
+    "R": {
+      "gen": "R",
+      "name": "uncurly",
+      "note": "Here: long+curly = long, short+uncurly = short, else: medium",
+      "rarity": 50
+    },
+    "r": {
+      "gen": "r",
+      "name": "curly",
+      "note": "In reality, there are many different versions of curly fur.",
+      "rarity": 50
+    }
+  },
+  "D1": {
+    "C": {
+      "gen": "C",
+      "name": "wildtype",
+      "note": "dominant",
+      "rarity": 60
+    },
+    "cb": {
+      "gen": "cb",
+      "name": "burma points",
+      "note": "yellow eyes",
+      "rarity": 10,
+      "trivia": "This is similar to the same as in russian rabbits-modification, where the rabbits's fur depends on its surrounding temperature.'"
+    },
+    "cs": {
+      "gen": "cs",
+      "name": "siamese points",
+      "note": "burma + siamese makes the mink type which have aqua eyes. Siamese cats have blue ones.",
+      "rarity": 10
+    },
+    "ca": {
+      "gen": "ca",
+      "name": "blue-eyed albino",
+      "rarity": 10
+    },
+    "c": {
+      "gen": "c",
+      "name": "albino",
+      "note": "I don't know whether this is co-recessive or recessive to ca, but it sounds more likely that ca > c.",
+      "rarity": 10
+    }
+  },
+  "D2": {
+    "I": {
+      "gen": "I",
+      "name": "inhibited pigment",
+      "note": "I + agouti -> smoked, I + not agouti -> silver",
+      "rarity": 10
+    },
+    "i": {
+      "gen": "i",
+      "name": "not inhibited pigment",
+      "note": "recessive",
+      "rarity": 90
+    }
+  },
+  "D4": {
+    "B": {
+      "gen": "B",
+      "name": "black",
+      "note": "dominant",
+      "rarity": 40
+    },
+    "b": {
+      "gen": "b",
+      "name": "brown",
+      "note": "dominant over b' but recessive to B.",
+      "rarity": 50
+    },
+    "b'": {
+      "gen": "b'",
+      "name": "cinnamon",
+      "note": "recessive",
+      "rarity": 10
+    }
+  },
+  "EYE": {
+    "more": {
+      "gen": "more",
+      "name": "brown eyes",
+      "rarity": 50
+    },
+    "mid": {
+      "gen": "mid",
+      "name": "green eyes",
+      "rarity": 20
+    },
+    "less": {
+      "gen": "less",
+      "name": "blue eyes",
+      "rarity": 30
+    }
+  },
+  "KIT": {
+    "Wp": {
+      "gen": "Wp",
+      "name": "deaf white",
+      "note": "All-time dominant",
+      "rarity": 1,
+      "trivia": "Affected cats are white, deaf and blue-eyed, the deafness is caused by missing melanin in the ears."
+    },
+    "Ws": {
+      "gen": "Ws",
+      "name": "white spots",
+      "note": "Co-dominant with wild-type. Heterozygot cats are 0-50% white, homozygot cats 50-100%.",
+      "rarity": 10,
+      "trivia": "Because of the less melatonin, cats with white colored ears are likely to be deaf."
+    },
+    "w": {
+      "gen": "w",
+      "name": "wildtype",
+      "note": "Co-dominant with Ws",
+      "rarity": 50
+    },
+    "wg": {
+      "gen": "wg",
+      "name": "gloves or boots",
+      "note": "I couldn't found affections by other gens, but notation makes it sound like it is recessive.",
+      "rarity": 30
+    },
+    "wsal": {
+      "gen": "wsal",
+      "name": "salty licorice",
+      "note": "Not well documented. Here, it will be recessive to all other genes and cause one of the Vitiligo options.",
+      "rarity": 9
+    }
+  },
+  "LEN": {
+    "L": {
+      "gen": "L",
+      "name": "short fur",
+      "rarity": 60
+    },
+    "l": {
+      "gen": "l",
+      "name": "long fur",
+      "rarity": 40
+    }
+  },
+  "ODD_EYE": {
+    "hetero": {
+      "gen": "hetero",
+      "name": "heterochrome eyes",
+      "rarity": 5
+    },
+    "homo": {
+      "gen": "homo",
+      "name": "homochrome eyes",
+      "rarity": 95
+    }
+  },
+  "VIT": {
+    "V": {
+      "gen": "V",
+      "name": "resistant",
+      "note": "Not well documented. Here, vitiligo is recessive. It could be an autoimmune disorder or stress-caused.",
+      "rarity": 85
+    },
+    "v": {
+      "gen": "v",
+      "name": "vitiligo",
+      "rarity": 15
+    }
+  },
+  "X": {
+    "O": {
+      "gen": "O",
+      "name": "orange",
+      "note": "dominant, but only females have two X.",
+      "rarity": 15
+    },
+    "o": {
+      "gen": "o",
+      "name": "not orange",
+      "rarity": 85
+    }
+  }
+}

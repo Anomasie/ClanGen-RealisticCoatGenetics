@@ -1,0 +1,584 @@
+{
+  "A1": [
+    {
+      "require": [
+        {
+          "category": "stripes",
+          "feature": "no stripes"
+        }
+      ]
+    },
+    {
+      "require": [
+        {
+          "category": "stripes",
+          "feature": "ticked"
+        }
+      ],
+      "traits": [
+        ["TiA", "TiA"],
+        ["TiA", "Ti+"]
+      ]
+    },
+    {
+      "trait": ["Ti+", "Ti+"]
+    }
+  ],
+  "A3": [
+    {
+      "require": [
+        {
+          "category": "stripes",
+          "feature": "light"
+        }
+      ],
+      "trait": ["a", "a"]
+    },
+    {
+      "require": [
+        {
+          "category": "stripes",
+          "feature": "no stripes"
+        }
+      ],
+      "trait": ["a", "a"]
+    },
+    {
+      "traits": [
+        ["A", "a"],
+        ["A", "A"]
+      ]
+    }
+  ],
+  "B1": [
+    {
+      "require": [
+        {
+          "category": "stripes",
+          "feature_in": ["spotted", "ticked", "no stripes"]
+        }
+      ]
+    },
+    {
+      "require": [
+        {
+          "category": "stripes",
+          "feature": "mackerel"
+        }
+      ],
+      "traits": [
+        ["TaM", "TaM"],
+        ["TaM", "Tab"]
+      ]
+    },
+    {
+      "trait": ["Tab", "Tab"]
+    }
+  ],
+  "BS": [
+    {
+      "require": [
+        {
+          "category": "stripes",
+          "feature_in": ["ticked", "no stripes"]
+        }
+      ]
+    },
+    {
+      "require": [
+        {
+          "category": "stripes",
+          "feature": "spotted"
+        }
+      ],
+      "traits": [
+        ["Sp", "Sp"],
+        ["Sp", "sp"]
+      ]
+    },
+    {
+      "trait": ["sp", "sp"]
+    }
+  ],
+  "C1": [
+    {
+      "require": [
+        {
+          "category": "color",
+          "feature": "white"
+        }
+      ]
+    },
+    {
+      "require": [
+        {
+          "category": "diluted",
+          "feature": "full-color"
+        }
+      ],
+      "traits": [
+        ["D", "D"],
+        ["D", "d"]
+      ]
+    },
+    {
+      "trait": ["d", "d"]
+    }
+  ],
+  "CAR": [
+    {
+      "require": [
+        {
+          "category": "diluted",
+          "feature": "caramelized"
+        }
+      ],
+      "trait": ["dm", "dm"]
+    },
+    {
+      "require": [
+        {
+          "category": "diluted",
+          "feature": "diluted"
+        }
+      ],
+      "traits": [
+        ["Dm", "Dm"],
+        ["Dm", "dm"]
+      ]
+    }
+  ],
+  "CURL": [
+    {
+      "require": [
+        {
+          "category": "length",
+          "feature": "long"
+        }
+      ],
+      "traits": [
+        ["r", "r"]
+      ]
+    },
+    {
+      "traits": [
+        ["R", "R"],
+        ["R", "r"]
+      ]
+    }
+  ],
+  "D1": [
+    {
+      "require": [
+        {
+          "category": "color",
+          "feature": "white"
+        },
+        {
+          "category": "eyes",
+          "feature": "blue"
+        }
+      ],
+      "traits": [
+        ["ca", "ca"],
+        ["ca", "c"]
+      ]
+    },
+    {
+      "require": [
+        {
+          "category": "color",
+          "feature": "white"
+        },
+        {
+          "category": "eyes",
+          "feature": "red"
+        }
+      ],
+      "trait": ["c", "c"]
+    },
+    {
+      "require": [
+        {
+          "category": "pointer",
+          "feature": "mink"
+        }
+      ],
+      "trait": ["cb", "cs"]
+    },
+    {
+      "require": [
+        {
+          "category": "pointer",
+          "feature": "burma"
+        }
+      ],
+      "traits": [
+        ["cb", "cb"],
+        ["cb", "c"],
+        ["cb", "ca"]
+      ]
+    },
+    {
+      "require": [
+        {
+          "category": "pointer",
+          "feature": "siam"
+        }
+      ],
+      "traits": [
+        ["cs", "cs"],
+        ["cs", "c"],
+        ["cs", "ca"]
+      ]
+    },
+    {
+      "traits": [
+        ["C", "C"],
+        ["C", "ca"],
+        ["C", "cb"],
+        ["C", "cs"],
+        ["C", "C"]
+      ]
+    }
+  ],
+  "D2": [
+    {
+      "require": [
+        {
+          "category": "hair tips",
+          "feature": "full-color"
+        }
+      ],
+      "trait": ["i", "i"]
+    },
+    {
+      "traits": [
+        ["I", "I"],
+        ["I", "i"]
+      ]
+    }
+  ],
+  "D4": [
+    {
+      "require": [
+        {
+          "category": "color",
+          "feature": "black"
+        }
+      ],
+      "traits": [
+        ["B", "B"],
+        ["B", "b"],
+        ["B", "b'"]
+      ]
+    },
+    {
+      "require": [
+        {
+          "category": "color",
+          "feature": "brown"
+        }
+      ],
+      "traits": [
+        ["b", "b"],
+        ["b", "b'"]
+      ]
+    },
+    {
+      "require": [
+        {
+          "category": "color",
+          "feature": "cinnamon"
+        }
+      ],
+      "traits": [
+        ["b'", "b'"]
+      ]
+    }
+  ],
+  "EYE": [
+    {
+      "require": [
+        {
+          "category": "eyes",
+          "feature": "red"
+        }
+      ]
+    },
+    {
+      "require": [
+        {
+          "category": "eyes",
+          "feature": "blue"
+        },
+        {
+          "category": "color",
+          "feature": "white"
+        }
+      ]
+    },
+    {
+      "require": [
+        {
+          "category": "pointer",
+          "feature_in": ["burma", "mink", "siam"]
+        }
+      ]
+    },
+    {
+      "require": [
+        {
+          "category": "eyes",
+          "feature": "blue"
+        }
+      ],
+      "trait": ["less", "less"]
+    },
+    {
+      "require": [
+        {
+          "category": "eyes",
+          "feature": "green"
+        }
+      ],
+      "trait": ["more", "less"]
+    },
+    {
+      "require": [
+        {
+          "category": "eyes",
+          "feature": "brown"
+        }
+      ],
+      "trait": ["more", "more"]
+    }
+  ],
+  "KIT": [
+    {
+      "require": [
+        {
+          "category": "color",
+          "feature": "white"
+        },
+        {
+          "category": "hearing",
+          "feature": "deaf"
+        }
+      ],
+      "traits": [
+        ["Wp", "Wp"],
+        ["Wp", "Ws"],
+        ["Wp", "w"],
+        ["Wp", "wg"],
+        ["Wp", "wsal"]
+      ]
+    },
+    {
+      "require": [
+        {
+          "category": "spots",
+          "feature": "big white spots"
+        }
+      ],
+      "trait": ["Ws", "Ws"]
+    },
+    {
+      "require": [
+        {
+          "category": "spots",
+          "feature": "small white spots"
+        }
+      ],
+      "traits": [
+        ["Ws", "w"],
+        ["Ws", "wg"],
+        ["Ws", "wsal"]
+      ]
+    },
+    {
+      "require": [
+        {
+          "category": "spots",
+          "feature": "gloves"
+        }
+      ],
+      "trait": ["wg", "wg"]
+    },
+    {
+      "require": [
+        {
+          "category": "spots",
+          "feature": "salty licorice"
+        }
+      ],
+      "trait": ["wsal", "wsal"]
+    },
+    {
+      "traits": [
+        ["w", "w"],
+        ["wg", "w"],
+        ["w", "wsal"]
+      ]
+    }
+  ],
+  "LEN": [
+    {
+      "require":[
+        {
+          "category": "length",
+          "feature_in": ["long", "medium"]
+        }
+      ],
+      "traits": [
+        ["l", "l"],
+        ["L", "l"]
+      ]
+    },
+    {
+      "trait": ["L", "L"]
+    }
+  ],
+  "ODD_EYE": [
+    {
+      "require": [
+        {
+          "category": "eyes",
+          "size": 2
+        }
+      ],
+      "traits": [
+        ["hetero", "hetero"],
+        ["hetero", "homo"]
+      ]
+    },
+    {
+      "require": [
+        {
+          "category": "eyes",
+          "feature": "red"
+        }
+      ]
+    },
+    {
+      "require": [
+        {
+          "category": "eyes",
+          "feature": "blue"
+        },
+        {
+          "category": "color",
+          "feature": "white"
+        }
+      ]
+    },
+    {
+      "trait": ["homo", "homo"]
+    }
+  ],
+  "VIT": [
+    {
+      "require": [
+        {
+          "category": "vitiligo",
+          "feature": "vitiligo"
+        }
+      ],
+      "trait": ["v", "v"]
+    },
+    {
+      "traits": [
+        ["V", "v"],
+        ["V", "V"]
+      ]
+    }
+  ],
+  "X": [
+    {
+      "require": [
+        {
+          "category": "color",
+          "size": 2
+        }
+      ],
+      "feature": ["O", "o"]
+    },
+    {
+      "require": [
+        {
+          "category": "color",
+          "feature": "red"
+        },
+        {
+          "category": "sex",
+          "feature": "female"
+        }
+      ],
+      "trait": ["O", "O"]
+    },
+    {
+      "require": [
+        {
+          "category": "color",
+          "feature": "red"
+        },
+        {
+          "category": "sex",
+          "feature": "male"
+        }
+      ],
+      "trait": ["O"]
+    },
+    {
+      "require": [
+        {
+          "category": "color",
+          "feature": "white"
+        },
+        {
+          "category": "sex",
+          "feature": "female"
+        }
+      ],
+      "traits": [
+        ["O", "O"],
+        ["O", "o"],
+        ["o", "o"]
+      ]
+    },
+    {
+      "require": [
+        {
+          "category": "color",
+          "feature": "white"
+        },
+        {
+          "category": "sex",
+          "feature": "male"
+        }
+      ],
+      "traits": [
+        ["O"],
+        ["o"]
+      ]
+    },
+    {
+      "require": [
+        {
+          "category": "sex",
+          "feature": "female"
+        }
+      ],
+      "trait": ["o", "o"]
+    },
+    {
+      "require": [
+        {
+          "category": "sex",
+          "feature": "male"
+        }
+      ],
+      "trait": ["o"]
+    }
+  ]
+}
