@@ -8,6 +8,7 @@ import ujson
 
 from scripts.cat.cats import Cat, BACKSTORIES
 from ..cat.enums import CatGroup, CatRank
+from scripts.cat.genetics.pelt_genome import PeltGenome
 from scripts.cat.pelts import Pelt
 from scripts.cat_relations.inheritance import Inheritance
 from scripts.game_structure.game.switches import (
@@ -95,6 +96,7 @@ def json_load():
                 parent2=cat["parent2"],
                 moons=cat["moons"],
                 eye_colour=cat["eye_colour"],
+                pelt_genotype=cat["pelt_genotype"],
                 loading_cat=True,
             )
 
@@ -170,7 +172,10 @@ def json_load():
                 accessory=cat["accessory"],
                 opacity=cat["opacity"] if "opacity" in cat else 100,
             )
-
+            if not new_cat.pelt_genome or not new_cat.pelt_genome.check_genotype(): # this should not happen unless the json data is corrupted 
+                print("Create new pelt_genome for ", new_cat.name)
+                new_cat.pelt_genome = PeltGenome(pelt=new_cat.pelt, sex=new_cat.gender, permanent_conditions=new_cat.permanent_condition)
+                
             # Runs a bunch of appearance-related conversion of old stuff.
             new_cat.pelt.check_and_convert(convert)
 
@@ -256,17 +261,17 @@ def json_load():
                 or cat.get("exiled")
                 or cat.get("outside")
             ):
-                if cat.get("dead") and not new_cat.status.group.is_afterlife():
+                if cat.get("dead") and (
+                    not new_cat.status.group or not new_cat.status.group.is_afterlife()
+                ):
                     if cat.get("df"):
-                        new_cat.status.send_to_afterlife(
-                            target_ID=CatGroup.DARK_FOREST_ID
-                        )
+                        new_cat.status.send_to_afterlife(target=CatGroup.DARK_FOREST)
                     elif cat.get("outside"):
                         new_cat.status.send_to_afterlife(
-                            target_ID=CatGroup.UNKNOWN_RESIDENCE_ID
+                            target=CatGroup.UNKNOWN_RESIDENCE
                         )
                     else:
-                        new_cat.status.send_to_afterlife(target_ID=CatGroup.STARCLAN_ID)
+                        new_cat.status.send_to_afterlife(target=CatGroup.STARCLAN)
 
                 else:
                     # these should properly change the cat's status to align with old bool info
@@ -276,7 +281,7 @@ def json_load():
                         new_cat.status.become_lost()
 
                     if cat.get("driven_out"):
-                        new_cat.status.change_group_nearness(CatGroup.PLAYER_CLAN_ID)
+                        new_cat.status.change_group_nearness(CatGroup.PLAYER_CLAN)
 
             new_cat.dead_for = cat["dead_moons"]
             new_cat.experience = cat["experience"]
@@ -531,7 +536,7 @@ def csv_load(all_cats):
                         the_cat.mate = [attr[31]]
                     if len(attr) >= 32:
                         # Is the cat dead
-                        the_cat.status.send_to_afterlife(target_ID=CatGroup.STARCLAN_ID)
+                        the_cat.status.send_to_afterlife(target=CatGroup.STARCLAN)
                         the_cat.pelt.cat_sprites["dead"] = attr[33]
                 switch_set_value(
                     Switch.error_message,

@@ -7,6 +7,7 @@ import i18n
 from scripts.cat.cats import Cat
 from scripts.cat.enums import CatAge, CatGroup, CatRank, CatSocial
 from scripts.cat.names import names, Name
+from scripts.cat.genetics.pelt_genome import PeltGenome
 from scripts.cat_relations.relationship import Relationship, RelType
 from scripts.clan_package.settings import get_clan_setting
 from scripts.event_class import Single_Event
@@ -398,11 +399,11 @@ class Pregnancy_Events:
         if cat.status.is_outsider:
             for kit in kits:
                 kit.status.generate_new_status(
-                    age=kit.age, social=cat.status.social, group_ID=cat.status.group_ID
+                    age=kit.age, social=cat.status.social, group=cat.status.group
                 )
                 kit.backstory = "outsider1"
 
-                if cat.status.is_exiled(CatGroup.PLAYER_CLAN_ID):
+                if cat.status.is_exiled(CatGroup.PLAYER_CLAN):
                     name = choice(names.names_dict["normal_prefixes"])
                     kit.name = Name(prefix=name, suffix="", cat=kit)
 
@@ -410,7 +411,7 @@ class Pregnancy_Events:
                     kit.backstory = "outsider2"
 
                 if cat.status.is_outsider and not cat.status.is_exiled(
-                    CatGroup.PLAYER_CLAN_ID
+                    CatGroup.PLAYER_CLAN
                 ):
                     kit.backstory = "outsider3"
                 kit.relationships = {}
@@ -807,6 +808,9 @@ class Pregnancy_Events:
         #############################
 
         #### GENERATE THE KITS ######
+        if get_clan_setting("realistic pelt behavior") and not other_cat:
+            parent2_genes = PeltGenome()
+
         for kit in range(kits_amount):
             if not cat:
                 # No parents provided, give a blood parent - this is an adoption.
@@ -839,7 +843,10 @@ class Pregnancy_Events:
                 kit.thought = event_text_adjust(Cat, kit.thought, random_cat=cat)
             else:
                 # A one blood parent litter is the only option left.
-                kit = Cat(parent1=cat.ID, moons=0, backstory=backstory)
+                if get_clan_setting("realistic pelt behavior") and not other_cat:
+                    kit = Cat(parent1=cat.ID, parent2_pelt_genes=parent2_genes, moons=0)
+                else:
+                    kit = Cat(parent1=cat.ID, moons=0, backstory=backstory)
                 kit.thought = i18n.t("hardcoded.new_kit_thought", name=str(cat.name))
                 kit.thought = event_text_adjust(Cat, kit.thought, random_cat=cat)
 

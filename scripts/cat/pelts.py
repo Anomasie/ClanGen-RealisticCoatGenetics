@@ -11,7 +11,6 @@ from scripts.game_structure import game
 from scripts.game_structure.localization import get_lang_config
 from scripts.utility import adjust_list_text
 
-
 class Pelt:
     sprites_names = {
         "SingleColour": "single",
@@ -176,7 +175,7 @@ class Pelt:
         "SAGE",
         "COBALT",
         "SUNLITICE",
-        "GREENYELLOW",
+        "GREEN",
         "BRONZE",
         "SILVER",
         "ORANGE",
@@ -187,7 +186,7 @@ class Pelt:
         "PALEYELLOW",
         "GOLD",
         "COPPER",
-        "GREENYELLOW",
+        "YELLOW",
         "BRONZE",
         "SILVER",
         "ORANGE",
@@ -540,6 +539,31 @@ class Pelt:
         "SILVER",
         "ORANGE",
     ]
+    paws_white = [
+        "PAWS",
+        "TOES",
+        "TOESTAIL",
+        "DIVA",
+        "DOUGIE"
+    ]
+    tuxedo_white = [
+        "BOWTIE",
+        "DIGIT",
+        "FANCY",
+        "FCONE",
+        "FCTWO",
+        "MIA",
+        "MITAINE",
+        "PRINCESS",
+        "SAVANNAH",
+        "TUXEDO",
+        "BUB",
+        "BROKEN",
+        "FRONT",
+        "PIEBALD",
+        "SCAR",
+        "TRIXIE"
+    ]
     little_white = [
         "LITTLE",
         "LIGHTTUXEDO",
@@ -802,6 +826,17 @@ class Pelt:
         new_pelt.init_accessories(age)
         new_pelt.init_eyes(parents)
         new_pelt.init_pattern()
+        new_pelt.init_tint()
+
+        return new_pelt
+    
+    @staticmethod
+    def generate_new_pelt_from_genome(genome, age: str = "adult"):
+        new_pelt = Pelt.get_pelt_from_genome(genome)
+
+        new_pelt.init_sprite()
+        new_pelt.init_scars(age)
+        new_pelt.init_accessories(age)
         new_pelt.init_tint()
 
         return new_pelt
@@ -1219,8 +1254,134 @@ class Pelt:
             chosen_tortie_base  # This will be none if the cat isn't a tortie.
         )
         return chosen_white
+    
+    def get_example_eye_color(self, color):
+        match color:
+            case "red":
+                return "COPPER"
+            case "blue":
+                return choice(self.blue_eyes)
+            case "brown":
+                return choice(["BRONZE", "AMBER", "HAZEL"])
+            case "green":
+                return choice(self.green_eyes)
+        return choice(self.yellow_eyes)
+    
+    @staticmethod
+    def get_colour_name_in_series(pelt_genome, colour_name, pelt_colours_series_offset:int):
+        match colour_name:
+            case "black": return pelt_genome.pelt_colours_black_series[ pelt_colours_series_offset ]
+            case "brown": return pelt_genome.pelt_colours_brown_series[ pelt_colours_series_offset ]
+            case "cinnamon": return pelt_genome.pelt_colours_cinnamon_series[ pelt_colours_series_offset ]
+            case "red": return pelt_genome.pelt_colours_red_series[ pelt_colours_series_offset ]
+        return "WHITE"
 
-    def init_pattern_color(self, parents, gender) -> bool:
+    @staticmethod
+    def get_pelt_from_genome(pelt_genome):
+        new_pelt = Pelt()
+        
+        # length
+        new_pelt.length = pelt_genome.phenotype["length"][0]
+        
+        # colour
+        pelt_colours_series_offset = int(
+            int("diluted" in pelt_genome.phenotype["diluted"]) * 3
+            + int("caramelized" in pelt_genome.phenotype["diluted"]) * 6
+            + int("smoked" in pelt_genome.phenotype["hair tips"])
+            + int("shaded" in pelt_genome.phenotype["hair tips"]) * 2
+        )
+        new_pelt.colour = Pelt.get_colour_name_in_series(pelt_genome, pelt_genome.phenotype["color"][-1], pelt_colours_series_offset)
+
+         # vitiligo
+        if "fading" in pelt_genome.phenotype["spots"]:
+            new_pelt.vitiligo = choice(new_pelt.vit)
+        else:
+            new_pelt.vitiligo = None
+
+        # white_patches
+        if "small white spots" in pelt_genome.phenotype["spots"]:
+            new_pelt.white_patches = choice(Pelt.little_white + Pelt.mid_white)
+        elif "big white spots" in pelt_genome.phenotype["spots"]:
+            new_pelt.white_patches = choice(Pelt.high_white + Pelt.mostly_white)
+        elif "gloves" in pelt_genome.phenotype["spots"]: # gloves:
+            new_pelt.white_patches = choice(Pelt.paws_white)
+        elif "salty licorice" in pelt_genome.phenotype["spots"]:
+            new_pelt.white_patches = choice(Pelt.tuxedo_white)
+            new_pelt.vitiligo = choice(["VITILIGO", "VITILIGOTWO"])
+
+        # else: new_pelt.white_patches = None
+        
+        # eye_color 1 and 2
+        if len(pelt_genome.phenotype["eyes"]) > 1:
+            if random.random() < 0.5:
+                new_pelt.eye_colour2 = new_pelt.get_example_eye_color("blue")
+                new_pelt.eye_colour = new_pelt.get_example_eye_color(pelt_genome.phenotype["eyes"][1])
+            else:
+                new_pelt.eye_colour = new_pelt.get_example_eye_color("blue")
+                new_pelt.eye_colour2 = new_pelt.get_example_eye_color(pelt_genome.phenotype["eyes"][1])
+        else:
+            new_pelt.eye_colour = new_pelt.get_example_eye_color(pelt_genome.phenotype["eyes"][0])
+
+        # stripes
+        if "white" in pelt_genome.phenotype["color"]:
+            new_pelt.name = "SingleColour"
+        else:
+            match pelt_genome.phenotype["stripes"][-1]:
+                case "no stripes":
+                    new_pelt.name = "SingleColour"
+                case "blotched":
+                    new_pelt.name = choice(pelt_genome.pelt_patterns_blotched)
+                case "mackerel":
+                    new_pelt.name = choice(pelt_genome.pelt_patterns_mackerel)
+                case "spotted":
+                    new_pelt.name = choice(pelt_genome.pelt_patterns_spotted)
+                case "ticked":
+                    new_pelt.name = choice(pelt_genome.pelt_patterns_ticked)
+        
+        ## torties
+        if len(pelt_genome.phenotype["color"]) > 1:
+            new_pelt.tortie_base = new_pelt.sprites_names[new_pelt.name]
+            new_pelt.tortie_colour = Pelt.get_colour_name_in_series(pelt_genome, pelt_genome.phenotype["color"][0], pelt_colours_series_offset)
+            new_pelt.tortie_marking = choice(new_pelt.tortie_patterns)
+            new_pelt.tortie_pattern = new_pelt.sprites_names[new_pelt.name]
+            new_pelt.name = "Calico" if new_pelt.white_patches else "Tortie"
+        else:
+            new_pelt.tortie_base = None
+            new_pelt.tortie_colour = None
+            new_pelt.tortie_marking = None
+            new_pelt.tortie_pattern = None
+        
+        # points
+        new_pelt.points = None
+        if new_pelt.colour != "WHITE":
+            match pelt_genome.phenotype["pointer"][0]:
+                case "mink":
+                    new_pelt.points = choice(["SEALPOINT", "MINKPOINT"])
+                case "burma":
+                    new_pelt.points = "COLOURPOINT"
+                case "siam":
+                    new_pelt.points = "RAGDOLL"
+            if not new_pelt.points:
+                if "smoked" in pelt_genome.phenotype["hair tips"] or "shaded" in pelt_genome.phenotype["hair tips"]:
+                    new_pelt.points = "SEPIAPOINT"
+
+        # accessory: don't change
+        # paralyzed: don't change
+        # opacity: don't change
+        # scars: don't change
+
+        # tint: don't change & white_patches_tint: don't change
+        # skin: don't change
+        
+        # kitten_sprite: don't change
+        # adol_sprite: don't change
+        # senior_sprite: don't change
+        # para_adult_sprite: don't change
+        # reverse: don't change
+
+        return new_pelt
+
+    def init_pattern_color(self, parents=None, gender=None) -> bool:
         """Inits self.name, self.colour, self.length,
         self.tortie_base and determines if the cat
         will have white patche or not.

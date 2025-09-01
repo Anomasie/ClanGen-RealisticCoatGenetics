@@ -19,6 +19,7 @@ from scripts.cat import save_load
 from scripts.cat.enums import CatAge, CatRank, CatSocial, CatGroup
 from scripts.cat.history import History
 from scripts.cat.names import Name
+from scripts.cat.genetics.pelt_genome import PeltGenome
 from scripts.cat.pelts import Pelt
 from scripts.cat.personality import Personality
 from scripts.cat.skills import CatSkills
@@ -123,6 +124,7 @@ class Cat:
         backstory="clanborn",
         parent1=None,
         parent2=None,
+        parent2_pelt_genes=None,
         adoptive_parents=None,
         suffix=None,
         specsuffix_hidden=False,
@@ -131,7 +133,8 @@ class Cat:
         example=False,
         faded=False,
         skill_dict=None,
-        pelt: Pelt = None,
+        pelt=None,
+        pelt_genotype=None,   # does not effect anything as long as get_clan_setting("realistic pelt behavior") is False
         loading_cat=False,  # Set to true if you are loading a cat at start-up.
         *,
         disable_random=False,
@@ -152,6 +155,7 @@ class Cat:
         :param example: If cat is an example cat, default False
         :param faded: If cat is faded, default False
         :param skill_dict: TODO find a good definition for this
+        :param pelt_genotype: DNA-dictionary for pelt inheritance
         :param pelt: Body details, default None
         :param loading_cat: If loading a cat rather than generating a new one, default False
         :param disable_random: If True, disables as much random generation junk as possible
@@ -184,8 +188,8 @@ class Cat:
         )
         self.parent1 = parent1
         self.parent2 = parent2
+        self.parent2_pelt_genes = parent2_pelt_genes # only needed if kitten with unknown second parent
         self.adoptive_parents = adoptive_parents if adoptive_parents else []
-        self.pelt = pelt if pelt else Pelt()
         self.former_mentor = []
         self.patrol_with_mentor = 0
         self.apprentice = []
@@ -295,6 +299,26 @@ class Cat:
         else:
             self.backstory = self.backstory  # fixme why does this exist
 
+        # pelt genome
+        if not loading_cat: # then pelt & genotype will be set in load_cat.py
+            if get_clan_setting("realistic pelt behavior"):
+                # set pelt & genes
+                self.pelt_genome = PeltGenome(genotype=pelt_genotype)
+                self.pelt = pelt if pelt else Pelt().get_pelt_from_genome(self.pelt_genome)
+                # permanent conditions
+                if not example and "deaf" in self.pelt_genome.phenotype["hearing"]:
+                    self.get_permanent_condition(name="deaf", born_with=True)
+            else:
+                # set pelt & genes
+                self.pelt = pelt if pelt else Pelt()
+                if pelt_genotype:
+                    self.pelt_genome = PeltGenome(genotype=pelt_genotype)
+                else:
+                    self.pelt_genome = PeltGenome(pelt=self.pelt)
+        else:
+            self.pelt_genome = PeltGenome(genotype=pelt_genotype)
+            self.pelt = pelt if pelt else Pelt()
+
         # sex!?!??!?!?!??!?!?!?!??
         if self.gender is None:
             self.gender = "female" if disable_random else choice(["female", "male"])
@@ -318,8 +342,7 @@ class Cat:
             )
         else:
             biome = None
-        # NAME
-        # load_existing_name is needed so existing cats don't get their names changed/fixed for no reason
+
         if self.pelt is not None:
             self.name = Name(
                 prefix,
@@ -426,12 +449,29 @@ class Cat:
         # PRONOUNS AUTO-GENERATE WHEN REQUIRED
 
         # APPEARANCE
-        self.pelt = Pelt.generate_new_pelt(
-            self.gender,
-            [Cat.fetch_cat(i) for i in (self.parent1, self.parent2) if i],
-            self.age,
-        )
-
+        if get_clan_setting("realistic pelt behavior"):
+            # set pelt & genes
+            parent1 = Cat.fetch_cat(self.parent1).pelt_genome if self.parent1 else PeltGenome(sex="male")
+            if self.parent2:
+                parent2 = Cat.fetch_cat(self.parent2).pelt_genome
+            elif self.parent2_pelt_genes:
+                parent2 = self.parent2_pelt_genes
+            else:
+                parent2 = PeltGenome(sex="female")
+            self.pelt_genome.from_parents(parent1, parent2, sex=self.gender)
+            self.pelt = Pelt.generate_new_pelt_from_genome(self.pelt_genome, self.age)
+            # permanent conditions
+            if not self.example and "deaf" in self.pelt_genome.phenotype["hearing"]:
+                self.get_permanent_condition(name="deaf", born_with=True)
+        else:
+            # set pelt & genes
+            self.pelt = Pelt.generate_new_pelt(
+                self.gender,
+                [Cat.fetch_cat(i) for i in (self.parent1, self.parent2) if i],
+                self.age,
+            )
+            self.pelt_genome = PeltGenome(pelt=self.pelt, sex=self.gender, permanent_conditions=self.permanent_condition)
+       
         # Personality
         if disable_random:
             self.personality = Personality(
@@ -486,12 +526,12 @@ class Cat:
 
     @property
     def dead(self) -> bool:
-        return bool(self.status.group.is_afterlife())
+        return bool(self.status.group and self.status.group.is_afterlife())
 
     @dead.setter
     def dead(self, die: bool):
         if die:
-            if self.status.group.is_afterlife():
+            if self.status.group and self.status.group.is_afterlife():
                 print(
                     f"WARNING: Tried to kill {self.name} ID: {self.ID} but this cat is already dead!"
                 )
@@ -504,11 +544,7 @@ class Cat:
             entry.get("moons_as")
             for entry in self.status.group_history
             if entry.get("group")
-            in (
-                CatGroup.STARCLAN_ID,
-                CatGroup.UNKNOWN_RESIDENCE_ID,
-                CatGroup.DARK_FOREST_ID,
-            )
+            in (CatGroup.STARCLAN, CatGroup.UNKNOWN_RESIDENCE, CatGroup.DARK_FOREST)
         )
 
     @dead_for.setter
@@ -650,7 +686,7 @@ class Cat:
 
         # handle grief
         # since we just yeeted them to their afterlife, we gotta check their previous group affiliation, not current
-        if game.clan and self.status.get_last_living_group() == CatGroup.PLAYER_CLAN_ID:
+        if game.clan and self.status.get_last_living_group() == CatGroup.PLAYER_CLAN:
             self.grief(body)
             Cat.dead_cats.append(self)
 
@@ -879,10 +915,10 @@ class Cat:
         """Makes an "outside cat" a Clan cat. Returns a list of IDs for any additional cats that
         are coming with them."""
 
-        if not self.status.is_exiled(CatGroup.PLAYER_CLAN_ID):
+        if not self.status.is_exiled(CatGroup.PLAYER_CLAN):
             self.history.add_beginning()
 
-        self.status.add_to_group(new_group_ID=CatGroup.PLAYER_CLAN_ID, age=self.age)
+        self.status.add_to_group(new_group=CatGroup.PLAYER_CLAN, age=self.age)
 
         game.clan.add_to_clan(self)
 
@@ -893,12 +929,10 @@ class Cat:
             child = Cat.all_cats[child_id]
             if (
                 not child.dead
-                and not child.status.is_exiled(CatGroup.PLAYER_CLAN_ID)
+                and not child.status.is_exiled(CatGroup.PLAYER_CLAN)
                 and child.moons < 12
             ):
-                child.status.add_to_group(
-                    new_group_ID=CatGroup.PLAYER_CLAN_ID, age=self.age
-                )
+                child.status.add_to_group(new_group=CatGroup.PLAYER_CLAN, age=self.age)
                 child.add_to_clan()
                 child.history.add_beginning()
                 ids.append(child_id)
@@ -1555,7 +1589,7 @@ class Cat:
                     i += 1
 
             # for dead cats, they can think about whoever they want
-            elif self.status.group.is_afterlife():
+            elif self.status.group and self.status.group.is_afterlife():
                 other_cat = choice(all_cats)
 
             # for cats currently outside
@@ -1578,7 +1612,7 @@ class Cat:
         if just_died:
             afterlife = (
                 self.status.group
-                if self.status.group.is_afterlife()
+                if self.status.group and self.status.group.is_afterlife()
                 else game.clan.instructor.status.group
             )
             chosen_thought = Thoughts.new_death_thought(
@@ -2278,7 +2312,7 @@ class Cat:
             return False
 
         # App and mentor must be members of the same clan
-        if self.status.group_ID != potential_mentor.status.group_ID:
+        if self.status.group != potential_mentor.status.group:
             return False
 
         # Match jobs
@@ -2625,8 +2659,8 @@ class Cat:
             # if they dead (dead cats have no relationships)
             if self.dead or inter_cat.dead:
                 continue
-            # if they are not within the same group
-            if self.status.group_ID != inter_cat.status.group_ID:
+            # if they are not outside of the Clan at the same time
+            if self.status.group != inter_cat.status.group:
                 continue
             inter_cat.relationships[self.ID] = Relationship(inter_cat, self)
             self.relationships[inter_cat.ID] = Relationship(self, inter_cat)
@@ -3027,9 +3061,9 @@ class Cat:
         cat_ob.faded = True
 
         if cat_info.get("df"):
-            cat_ob.status.send_to_afterlife(target_ID=CatGroup.DARK_FOREST_ID)
+            cat_ob.status.send_to_afterlife(target=CatGroup.DARK_FOREST)
         elif isinstance(cat_info["status"], str):
-            cat_ob.status.send_to_afterlife(target_ID=CatGroup.STARCLAN_ID)
+            cat_ob.status.send_to_afterlife(target=CatGroup.STARCLAN)
 
         cat_ob.dead_for = cat_info["dead_for"] if "dead_for" in cat_info else 1
 
@@ -3305,6 +3339,7 @@ class Cat:
                 "no_kits": self.no_kits,
                 "no_retire": self.no_retire,
                 "no_mates": self.no_mates,
+                "pelt_genotype": self.pelt_genome.genotype,
                 "pelt_name": self.pelt.name,
                 "pelt_color": self.pelt.colour,
                 "pelt_length": self.pelt.length,
@@ -3363,7 +3398,7 @@ class Cat:
             sorted_specific_list = [
                 check_cat
                 for check_cat in sorted_specific_list
-                if check_cat.status.group_ID == self.status.group_ID
+                if check_cat.status.group == self.status.group
             ]
 
         if filter_func is not None:
@@ -3431,7 +3466,7 @@ def create_cat(rank, moons=None, biome=None):
 # Twelve example cats
 def create_example_cats():
     warrior_indices = sample(range(12), 3)
-
+    
     for cat_index in range(12):
         if cat_index in warrior_indices:
             game.choose_cats[cat_index] = create_cat(rank=CatRank.WARRIOR)
@@ -3446,7 +3481,6 @@ def create_example_cats():
                 ]
             )
             game.choose_cats[cat_index] = create_cat(rank=random_rank)
-
 
 def create_option_preview_cat(scar: str = None, acc: str = None):
     """
