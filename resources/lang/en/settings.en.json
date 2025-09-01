@@ -56,6 +56,11 @@
         "same sex birth_tooltip": "Allow all cats to get pregnant despite their gender and all couples to birth kittens despite same-sex status.",
         "same sex adoption": "Increase same-sex adoption",
         "same sex adoption_tooltip": "If same-sex birth is disabled, this option greatly increases the chances of same-sex couples adopting.",
+        "realistic pelt behavior": [
+            "Realistic fur pattern behavior",
+            "If enabled, cats will only have realistic fur patterns and inheritance will follow real-world rules. Previous cats will still behave unrealisticly.",
+            true
+        ],
         "single parentage": "Allow cats to have kittens with an unknown second parent",
         "single parentage_tooltip": "Allow cats to have kittens with an unknown second biological parent. The cat will be listed as the only biological parent.",
         "romantic with former mentor": "Allow romantic interactions with former mentors",
