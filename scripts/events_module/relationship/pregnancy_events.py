@@ -399,11 +399,11 @@ class Pregnancy_Events:
         if cat.status.is_outsider:
             for kit in kits:
                 kit.status.generate_new_status(
-                    age=kit.age, social=cat.status.social, group=cat.status.group
+                    age=kit.age, social=cat.status.social, group_ID=cat.status.group_ID
                 )
                 kit.backstory = "outsider1"
 
-                if cat.status.is_exiled(CatGroup.PLAYER_CLAN):
+                if cat.status.is_exiled(CatGroup.PLAYER_CLAN_ID):
                     name = choice(names.names_dict["normal_prefixes"])
                     kit.name = Name(prefix=name, suffix="", cat=kit)
 
@@ -411,7 +411,7 @@ class Pregnancy_Events:
                     kit.backstory = "outsider2"
 
                 if cat.status.is_outsider and not cat.status.is_exiled(
-                    CatGroup.PLAYER_CLAN
+                    CatGroup.PLAYER_CLAN_ID
                 ):
                     kit.backstory = "outsider3"
                 kit.relationships = {}
@@ -844,7 +844,7 @@ class Pregnancy_Events:
             else:
                 # A one blood parent litter is the only option left.
                 if get_clan_setting("realistic pelt behavior") and not other_cat:
-                    kit = Cat(parent1=cat.ID, parent2_pelt_genes=parent2_genes, moons=0)
+                    kit = Cat(parent1=cat.ID, parent2_pelt_genes=parent2_genes, moons=0, backstory=backstory)
                 else:
                     kit = Cat(parent1=cat.ID, moons=0, backstory=backstory)
                 kit.thought = i18n.t("hardcoded.new_kit_thought", name=str(cat.name))
